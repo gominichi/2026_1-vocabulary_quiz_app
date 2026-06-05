@@ -5,8 +5,7 @@ import tkinter as tk
 
 from tkinter import ttk, font
 
-from vocabulary_quiz_app.quiz_logic import Word, check_answer, draw_word
-
+from vocabulary_quiz_app.quiz_logic import Word, check_answer, draw_word, filter_ebbinghaus_words, record_review_schedule
 
 class VocabularyQuizApp:
     def __init__(self, root: tk.Tk, words: list[Word]) -> None:
@@ -16,6 +15,7 @@ class VocabularyQuizApp:
         self.checked = False
         self.score = 0
         self.total = 0
+        self.current_round = 1
 
         self.default_font = font.nametofont("TkDefaultFont")
         self.default_font.configure(family="NanumGothic", size=12)
@@ -48,7 +48,8 @@ class VocabularyQuizApp:
         self.next_word()
 
     def next_word(self) -> None:
-        self.current = draw_word(self.words, self.rng)
+        available_words = filter_ebbinghaus_words(self.words, self.current_round)
+        self.current = draw_word(available_words, self.rng)
         self.word_var.set(self.current.term)
         self.answer_entry.delete(0, tk.END)
         self.feedback_var.set("")
@@ -56,16 +57,23 @@ class VocabularyQuizApp:
         self.check_button.state(["!disabled"])
         self.answer_entry.focus()
 
-    def check_current(self) -> None:
+def check_current(self) -> None:
         if self.current is None or self.checked:
             return
         self.checked = True
         self.total += 1
         user_input = self.answer_entry.get()
-        if check_answer(self.current, user_input):
+        
+        is_correct = check_answer(self.current, user_input)
+
+        if is_correct:
             self.score += 1
             self.feedback_var.set("정답입니다!")
         else:
             self.feedback_var.set(f"오답입니다. 정답: {self.current.meaning}")
+            
         self.score_var.set(f"Score: {self.score}/{self.total}")
+
+        record_review_schedule(self.current, is_correct, self.current_round)
+        self.current_round += 1
         self.check_button.state(["disabled"])
