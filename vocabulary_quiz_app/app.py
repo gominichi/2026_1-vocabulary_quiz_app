@@ -57,7 +57,7 @@ class VocabularyQuizApp:
         self.check_button.state(["!disabled"])
         self.answer_entry.focus()
 
-def check_current(self) -> None:
+    def check_current(self) -> None:
         if self.current is None or self.checked:
             return
         self.checked = True
