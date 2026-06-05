@@ -40,7 +40,7 @@ def filter_ebbinghaus_words(words: list[Word], current_round: int) -> list[Word]
     return candidates
 
 def record_review_schedule(word: Word, is_correct: bool, current_round: int):
- 	    # 정답 여부에 따라 다음 출제 타이밍을 예약
+        # 정답 여부에 따라 다음 출제 타이밍을 예약
     if is_correct:
         # 맞췄다면 '3판 뒤'에 출제되도록 예약
         REVIEW_TIMELINE[word.term] = current_round + 3
