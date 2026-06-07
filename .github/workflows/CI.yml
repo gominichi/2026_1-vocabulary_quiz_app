@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, add_new_function ]
   pull_request:
-    branches: [ main, add_new_function ]
+    branches: [ main ]
 
 jobs:
   test:
